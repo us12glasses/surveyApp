@@ -30,9 +30,12 @@ Route::group([
             'question_type' => 'nullable|in:text,multiple_choice,rating',
             'start_date' => 'nullable|date_format:Y-m-d',
             'end_date' => 'nullable|date_format:Y-m-d|after_or_equal:start_date',
-            'answer' => 'nullable|string'
+            'answer' => 'nullable|string|max:255'
         ]);
         
-        return Excel::download(new ResponsesExport($validated), 'responses.xlsx');
+        return Excel::download(
+            new ResponsesExport($validated), 
+            'survey-responses-'.now()->format('Ymd-His').'.xlsx'
+        );
     })->name('export.responses');
 }); // this should be the absolute last line of this file

@@ -24,18 +24,20 @@
                     <!-- Date Range -->
                     <div class="col-md-3">
                         <label>Start Date</label>
-                        <input type="date" name="start_date" 
-                            value="{{ $filters['start_date'] }}" 
-                            class="form-control"
-                            pattern="\d{4}-\d{2}-\d{2}">
+                        <input type="date" 
+                            name="start_date" 
+                            value="{{ $filters['start_date'] ?? '' }}" 
+                            class="form-control" 
+                            max="{{ date('Y-m-d') }}">
                     </div>
                     
                     <div class="col-md-3">
                         <label>End Date</label>
-                        <input type="date" name="end_date" 
-                            value="{{ $filters['end_date'] }}" 
-                            class="form-control"
-                            pattern="\d{4}-\d{2}-\d{2}">
+                        <input type="date" 
+                            name="end_date" 
+                            value="{{ $filters['end_date'] ?? '' }}" 
+                            class="form-control" 
+                            max="{{ date('Y-m-d') }}">
                     </div>
 
                     <!-- Answer Contains -->

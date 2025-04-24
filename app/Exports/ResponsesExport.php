@@ -11,6 +11,12 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class ResponsesExport implements FromCollection, WithHeadings, WithColumnFormatting
 {
+    protected $filters;
+
+    public function __construct(array $filters = [])
+    {
+        $this->filters = $filters;
+    }
     /**
     * @return \Illuminate\Support\Collection
     */
@@ -25,12 +31,15 @@ class ResponsesExport implements FromCollection, WithHeadings, WithColumnFormatt
             });
         }
 
+        // Date filtering with time boundaries
         if (!empty($this->filters['start_date'])) {
-            $query->whereDate('created_at', '>=', Carbon::parse($this->filters['start_date']));
+            $startDate = Carbon::parse($this->filters['start_date'])->startOfDay();
+            $query->where('created_at', '>=', $startDate);
         }
 
         if (!empty($this->filters['end_date'])) {
-            $query->whereDate('created_at', '<=', Carbon::parse($this->filters['end_date']));
+            $endDate = Carbon::parse($this->filters['end_date'])->endOfDay();
+            $query->where('created_at', '<=', $endDate);
         }
 
         if (!empty($this->filters['answer'])) {
