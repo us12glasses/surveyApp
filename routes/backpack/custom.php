@@ -20,8 +20,19 @@ Route::group([
 ], function () { // custom admin routes
     Route::crud('question', 'QuestionCrudController');
     Route::crud('response', 'ResponseCrudController');
-    // export routes
-    Route::get('export-responses', function () {
-        return Excel::download(new ResponsesExport, 'responses.xlsx');
-    })->name('export-responses');
+    // Reports
+    Route::get('reports', \App\Http\Controllers\Admin\ReportController::class)
+    ->middleware(['web', 'auth:backpack'])
+    ->name('reports');
+    // Export
+    Route::get('export-responses', function (Illuminate\Http\Request $request) {
+        $validated = $request->validate([
+            'question_type' => 'nullable|in:text,multiple_choice,rating',
+            'start_date' => 'nullable|date_format:Y-m-d',
+            'end_date' => 'nullable|date_format:Y-m-d|after_or_equal:start_date',
+            'answer' => 'nullable|string'
+        ]);
+        
+        return Excel::download(new ResponsesExport($validated), 'responses.xlsx');
+    })->name('export.responses');
 }); // this should be the absolute last line of this file
