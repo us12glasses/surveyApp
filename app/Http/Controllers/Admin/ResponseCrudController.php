@@ -58,6 +58,31 @@ class ResponseCrudController extends CrudController
         // Add export button
         $this->crud->addButtonFromView('top', 'export', 'export-responses', 'end');
 
+        // Add export button
+        $this->crud->addButtonFromView('top', 'export', 'export-responses', 'end');
+
+        // Question text search
+        CRUD::column('question.question_text')
+        ->searchLogic(function ($query, $column, $searchTerm) {
+            $query->orWhereHas('question', function($q) use ($searchTerm) {
+                $q->where('question_text', 'like', "%{$searchTerm}%");
+            });
+        });
+
+        // Answer search
+        CRUD::column('answer')
+        ->searchLogic(function ($query, $column, $searchTerm) {
+            $query->orWhere('answer', 'like', "%{$searchTerm}%");
+        });
+
+        CRUD::column('created_at')
+        ->searchLogic(function ($query, $column, $searchTerm) {
+            $query->orWhere('created_at', 'like', "%$searchTerm%")
+                  ->orWhereRaw("DATE_FORMAT(created_at, '%M %d %Y') LIKE ?", ["%$searchTerm%"]);
+        });
+        
+        $this->crud->set('search.placeholder', 'Search responses by question, answer or date...');
+
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');

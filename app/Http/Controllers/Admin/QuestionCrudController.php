@@ -45,6 +45,35 @@ class QuestionCrudController extends CrudController
         CRUD::column('created_at');
         CRUD::column('updated_at');
 
+        CRUD::column('question_text')
+        ->searchLogic(function ($query, $column, $searchTerm) {
+          $query->orWhere('question_text', 'like', "%{$searchTerm}%");
+        });
+    
+        CRUD::column('type')
+        ->searchLogic(function ($query, $column, $searchTerm) {
+            $query->orWhere('type', 'like', "%{$searchTerm}%");
+        });
+        
+        CRUD::column('options')
+        ->searchLogic(function ($query, $column, $searchTerm) {
+            $query->orWhere('options', 'like', "%{$searchTerm}%");
+        });
+        
+        CRUD::column('created_at')
+        ->searchLogic(function ($query, $column, $searchTerm) {
+            $query->orWhere('created_at', 'like', "%$searchTerm%")
+                  ->orWhereRaw("DATE_FORMAT(created_at, '%M %d %Y') LIKE ?", ["%$searchTerm%"]);
+        });
+
+        CRUD::column('updated_at')
+        ->searchLogic(function ($query, $column, $searchTerm) {
+            $query->orWhere('updated_at', 'like', "%$searchTerm%")
+                  ->orWhereRaw("DATE_FORMAT(updated_at, '%M %d %Y') LIKE ?", ["%$searchTerm%"]);
+        });
+
+            $this->crud->set('search.placeholder', 'Search questions...');
+
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
