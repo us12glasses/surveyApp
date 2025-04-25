@@ -22,7 +22,8 @@ class ResponsesExport implements FromCollection, WithHeadings, WithColumnFormatt
     */
     public function collection()
     {
-        $query = Response::with('question');
+        $query = Response::with('question')
+            ->orderBy('created_at', 'asc');  // Sorting by date in ascending order
 
         // Apply filters
         if (!empty($this->filters['question_type'])) {

@@ -50,7 +50,8 @@ Route::group([
             'answer' => 'nullable|string|max:255'
         ]);
     
-        $query = Response::with('question');
+        $query = Response::with('question')
+            ->orderBy('created_at', 'asc');  // Sorting by date in ascending order
         
         // Reuse filtering logic from ResponsesExport
         if (!empty($filters['question_type'])) {
