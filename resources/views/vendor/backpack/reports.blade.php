@@ -53,8 +53,15 @@
                     <button type="submit" class="btn btn-primary">
                         <i class="la la-filter"></i> Apply Filters
                     </button>
-                    <a href="{{ route('export.responses', request()->query()) }}" class="btn btn-success">
-                        <i class="la la-download"></i> Export
+                    
+                    <a href="{{ route('export.responses', request()->query()) }}" 
+                    class="btn btn-success">
+                        <i class="la la-file-excel"></i> Export to Excel
+                    </a>
+                    
+                    <a href="{{ route('export.responses.pdf', request()->query()) }}" 
+                    class="btn btn-danger">
+                        <i class="la la-file-pdf"></i> Export to PDF
                     </a>
                 </div>
             </form>

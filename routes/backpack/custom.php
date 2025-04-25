@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Exports\ResponsesExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Response;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 // --------------------------
 // Custom Backpack Routes
@@ -38,4 +40,33 @@ Route::group([
             'survey-responses-'.now()->format('Ymd-His').'.xlsx'
         );
     })->name('export.responses');
+
+    Route::get('export-responses-pdf', function (Illuminate\Http\Request $request) {
+        $filters = $request->validate([
+            // Same filters as Excel export
+            'start_date' => 'nullable|date_format:Y-m-d',
+            'end_date' => 'nullable|date_format:Y-m-d',
+            'question_type' => 'nullable|in:text,multiple_choice,rating',
+            'answer' => 'nullable|string'
+        ]);
+    
+        $query = Response::with('question');
+        
+        // Reuse filtering logic from ResponsesExport
+        if (!empty($filters['question_type'])) {
+            $query->whereHas('question', fn($q) => $q->where('type', $filters['question_type']));
+        }
+        // ... other filters ...
+    
+        $data = $query->get()->map(function ($response) {
+            return [
+                'question' => $response->question->question_text ?? 'N/A',
+                'answer' => $response->answer,
+                'date' => $response->created_at->format('M d, Y H:i')
+            ];
+        });
+    
+        $pdf = Pdf::loadView('pdf.responses', ['responses' => $data]);
+        return $pdf->download('survey-responses-'.now()->format('Ymd-His').'.pdf');
+    })->name('export.responses.pdf');
 }); // this should be the absolute last line of this file
