@@ -75,7 +75,7 @@ Route::group([
             return [
                 'question' => $response->question->question_text ?? 'N/A',
                 'answer' => $response->answer,
-                'date' => $response->created_at->format('M d, Y H:i')
+                'date' => $response->created_at->timezone('Asia/Jakarta')->format('d M Y H:i')
             ];
         });
     

@@ -52,7 +52,7 @@ class ResponsesExport implements FromCollection, WithHeadings, WithColumnFormatt
             return [
                 'Question' => $response->question->question_text ?? 'N/A',
                 'Answer' => $response->answer,
-                'Date' => $response->created_at->format('Y-m-d H:i:s')
+                'Date' => $response->created_at->timezone('Asia/Jakarta')->format('d M Y H:i')
             ];
         });
     }
