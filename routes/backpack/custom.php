@@ -44,10 +44,10 @@ Route::group([
     Route::get('export-responses-pdf', function (Illuminate\Http\Request $request) {
         $filters = $request->validate([
             // Same filters as Excel export
-            'start_date' => 'nullable|date_format:Y-m-d',
-            'end_date' => 'nullable|date_format:Y-m-d',
             'question_type' => 'nullable|in:text,multiple_choice,rating',
-            'answer' => 'nullable|string'
+            'start_date' => 'nullable|date_format:Y-m-d',
+            'end_date' => 'nullable|date_format:Y-m-d|after_or_equal:start_date',
+            'answer' => 'nullable|string|max:255'
         ]);
     
         $query = Response::with('question');
