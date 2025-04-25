@@ -56,7 +56,18 @@ Route::group([
         if (!empty($filters['question_type'])) {
             $query->whereHas('question', fn($q) => $q->where('type', $filters['question_type']));
         }
-        // ... other filters ...
+    
+        if (!empty($filters['start_date'])) {
+            $query->where('created_at', '>=', \Carbon\Carbon::parse($filters['start_date'])->startOfDay());
+        }
+    
+        if (!empty($filters['end_date'])) {
+            $query->where('created_at', '<=', \Carbon\Carbon::parse($filters['end_date'])->endOfDay());
+        }
+    
+        if (!empty($filters['answer'])) {
+            $query->where('answer', 'like', '%' . $filters['answer'] . '%');
+        }
     
         $data = $query->get()->map(function ($response) {
             return [
